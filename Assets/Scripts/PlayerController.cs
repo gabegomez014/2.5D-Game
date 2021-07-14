@@ -5,23 +5,54 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
-    private float _jumpForce = 5;
-    private Rigidbody _rb;
+    private float _moveSpeed = 3;
+    [SerializeField]
+    private float _gravityForce = 1.0f;
+    [SerializeField]
+    private float _jumpHeight = 15;
+    private CharacterController _controller;
+    private Vector3 _moveDir;
+    private float _yVelocity;
+    private bool _canDoubleJump;
 
     // Start is called before the first frame update
     void Start()
     {
-        _rb = GetComponent<Rigidbody>();
+        _controller = GetComponent<CharacterController>();
+        _moveDir = new Vector3(0,0,0);
+        _canDoubleJump = false;
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if (_rb.velocity.y == 0 && Input.GetKeyDown(KeyCode.Space))
+        _moveDir.x = Input.GetAxis("Horizontal");
+        Vector3 velocity = _moveDir * _moveSpeed;
+
+        if (_controller.isGrounded)
         {
-            _rb.AddForce(Vector3.up * _jumpForce);
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _yVelocity = _jumpHeight;
+                _canDoubleJump = true;
+            }
         }
-        
+
+        else
+        {
+            if (Input.GetKeyDown(KeyCode.Space) && _canDoubleJump)
+            {
+                _yVelocity += _jumpHeight;
+                _canDoubleJump = false;
+            }
+
+            _yVelocity -= _gravityForce;
+        }
+
+        velocity.y = _yVelocity;
+
+        _controller.Move(velocity * Time.deltaTime);
+
     }
 }

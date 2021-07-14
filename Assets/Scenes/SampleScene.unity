@@ -263,6 +263,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3750424152685074933, guid: 3d77aa1d473399f4b873c6245c5b6fce,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3d77aa1d473399f4b873c6245c5b6fce, type: 3}
 --- !u!1001 &291045025
@@ -530,6 +535,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3750424152685074933, guid: 3d77aa1d473399f4b873c6245c5b6fce,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3d77aa1d473399f4b873c6245c5b6fce, type: 3}
 --- !u!1 &1164187736
@@ -579,7 +589,6 @@ GameObject:
   - component: {fileID: 1228260772}
   - component: {fileID: 1228260771}
   - component: {fileID: 1228260770}
-  - component: {fileID: 1228260774}
   - component: {fileID: 1228260775}
   m_Layer: 0
   m_Name: Player
@@ -588,8 +597,8 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!136 &1228260770
-CapsuleCollider:
+--- !u!143 &1228260770
+CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -598,9 +607,13 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  serializedVersion: 2
   m_Height: 2
-  m_Direction: 1
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1228260771
 MeshRenderer:
@@ -663,22 +676,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &1228260774
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1228260769}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &1228260775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -691,7 +688,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e91673b9baf788d47ad91a1c255e2b3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _jumpForce: 300
+  _moveSpeed: 5
+  _gravityForce: 1
+  _jumpHeight: 20
 --- !u!1 &1687258581
 GameObject:
   m_ObjectHideFlags: 0
@@ -1081,6 +1080,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3750424152685074933, guid: 3d77aa1d473399f4b873c6245c5b6fce,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3d77aa1d473399f4b873c6245c5b6fce, type: 3}
