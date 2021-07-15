@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 _moveDir;
     private float _yVelocity;
     private bool _canDoubleJump;
+    private int _coins;
 
     // Start is called before the first frame update
     void Start()
@@ -54,5 +55,11 @@ public class PlayerController : MonoBehaviour
 
         _controller.Move(velocity * Time.deltaTime);
 
+    }
+
+    public void AddCoin()
+    {
+        _coins += 1;
+        UIManager.Instance.UpdateCoinsDisplay(_coins);
     }
 }
