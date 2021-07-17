@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,17 +11,20 @@ public class PlayerController : MonoBehaviour
     private float _gravityForce = 1.0f;
     [SerializeField]
     private float _jumpHeight = 15;
+    [SerializeField]
+    private int _lives = 3;
     private CharacterController _controller;
     private Vector3 _moveDir;
     private float _yVelocity;
     private bool _canDoubleJump;
     private int _coins;
 
+
     // Start is called before the first frame update
     void Start()
     {
         _controller = GetComponent<CharacterController>();
-        _moveDir = new Vector3(0,0,0);
+        _moveDir = new Vector3(0, 0, 0);
         _canDoubleJump = false;
     }
 
@@ -61,5 +65,16 @@ public class PlayerController : MonoBehaviour
     {
         _coins += 1;
         UIManager.Instance.UpdateCoinsDisplay(_coins);
+    }
+
+    public void Damage()
+    {
+        _lives -= 1;
+        UIManager.Instance.UpdateLivesDisplay(_lives);
+
+        if (_lives < 1)
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 }

@@ -7,6 +7,8 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField]
     private Text _coinsDisplayText;
+    [SerializeField]
+    private Text _livesDisplayText;
 
     private static UIManager _instance;
     public static UIManager Instance
@@ -25,11 +27,17 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        _coinsDisplayText.text = "Coins: 0"; 
+        _coinsDisplayText.text = "Coins: 0";
+        _livesDisplayText.text = "Lives: 3";
     }
 
     public void UpdateCoinsDisplay(int coins)
     {
         _coinsDisplayText.text = "Coins: " + coins;
+    }
+
+    public void UpdateLivesDisplay(int lives)
+    {
+        _livesDisplayText.text = "Lives: " + lives;
     }
 }
