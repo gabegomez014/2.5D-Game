@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
     private CharacterController _controller;
     private float _yVelocity;
     private Animator _anim;
+    private bool _jumping = false;
+    private bool _onLedge = false;
+    private Ledge _activeLedge;
 
 
     // Start is called before the first frame update
@@ -24,16 +27,33 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CalculateMovement();
+
+        if (Input.GetKeyDown(KeyCode.E) && _onLedge)
+        {
+            _anim.SetTrigger("Climbing");
+        }
+    }
+
+    void CalculateMovement()
+    {
         if (_controller.isGrounded)
         {
             _moveDir = new Vector3(0, 0, Input.GetAxisRaw("Horizontal"));
             _anim.SetFloat("Speed", Mathf.Abs(_moveDir.z));
 
+            if (_jumping)
+            {
+                _jumping = false;
+                _anim.SetBool("Jumping", _jumping);
+            }
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _yVelocity = 0;
                 _yVelocity += _jumpHeight;
-                _anim.SetTrigger("Jump");
+                _jumping = true;
+                _anim.SetBool("Jumping", _jumping);
             }
 
             if (_moveDir.z != 0)
@@ -53,5 +73,28 @@ public class Player : MonoBehaviour
         _playerVelocity.y = _yVelocity;
 
         _controller.Move(_playerVelocity * Time.deltaTime);
+    }
+
+    public void GrabLedge(Vector3 grabLocation, Ledge currentLedge)
+    {
+        _controller.enabled = false;
+        _anim.SetBool("GrabLedge", true);
+        _anim.SetBool("Jumping", false);
+        _anim.SetFloat("Speed", 0);
+        transform.position = grabLocation;
+        _onLedge = true;
+        _activeLedge = currentLedge;
+    }
+
+    public void ClimbUpStart()
+    {
+        transform.position = _activeLedge.ClimbStartPosition();
+    }
+
+    public void ClimbUpComplete()
+    {
+        transform.position = _activeLedge.GetStandUpPosition();
+        _anim.SetBool("GrabLedge", false);
+        _controller.enabled = true;
     }
 }
