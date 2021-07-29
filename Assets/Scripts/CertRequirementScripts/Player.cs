@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     private Animator _anim;
     private bool _jumping = false;
     private bool _onLedge = false;
+    private bool _isRolling = false;
     private Ledge _activeLedge;
     private int _coins;
 
@@ -41,6 +42,9 @@ public class Player : MonoBehaviour
         if (_controller.isGrounded)
         {
             _moveDir = new Vector3(0, 0, Input.GetAxisRaw("Horizontal"));
+
+            if (_isRolling) { _moveDir = new Vector3(0, 0, _playerVelocity.z/_speed); }
+
             _anim.SetFloat("Speed", Mathf.Abs(_moveDir.z));
 
             if (_jumping)
@@ -62,6 +66,13 @@ public class Player : MonoBehaviour
                 Vector3 facing = transform.localEulerAngles;
                 facing.y = _moveDir.z > 0 ? 0 : 180;
                 transform.localEulerAngles = facing;
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && _moveDir.z != 0 && !_jumping)
+            {
+                _anim.SetTrigger("Roll");
+                _isRolling = true;
+                StartCoroutine(RollMovementBlockTime());
             }
         }
 
@@ -103,5 +114,11 @@ public class Player : MonoBehaviour
     {
         _coins += 1;
         UIManager.Instance.UpdateCoinsDisplay(_coins);
+    }
+
+    IEnumerator RollMovementBlockTime()
+    {
+        yield return new WaitForSeconds(1.05f); // This is about the length of the rolling animation
+        _isRolling = false;
     }
 }
