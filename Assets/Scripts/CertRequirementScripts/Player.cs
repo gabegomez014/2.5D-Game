@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     private bool _jumping = false;
     private bool _onLedge = false;
     private Ledge _activeLedge;
+    private int _coins;
 
 
     // Start is called before the first frame update
@@ -96,5 +97,11 @@ public class Player : MonoBehaviour
         transform.position = _activeLedge.GetStandUpPosition();
         _anim.SetBool("GrabLedge", false);
         _controller.enabled = true;
+    }
+
+    public void CoinCollected()
+    {
+        _coins += 1;
+        UIManager.Instance.UpdateCoinsDisplay(_coins);
     }
 }

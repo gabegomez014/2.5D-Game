@@ -8,10 +8,10 @@ public class CoinController : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            PlayerController player = other.GetComponent<PlayerController>();
+            Player player = other.GetComponent<Player>();
             if (player != null)
             {
-                player.AddCoin();
+                player.CoinCollected();
                 Destroy(this.gameObject);
             }
         }

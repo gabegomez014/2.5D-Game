@@ -27,8 +27,6 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        _coinsDisplayText.text = "Coins: 0";
-        _livesDisplayText.text = "Lives: 3";
     }
 
     public void UpdateCoinsDisplay(int coins)
