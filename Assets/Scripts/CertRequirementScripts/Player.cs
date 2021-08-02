@@ -15,7 +15,9 @@ public class Player : MonoBehaviour
     private bool _jumping = false;
     private bool _onLedge = false;
     private bool _isRolling = false;
+    private bool _climbing = false;
     private Ledge _activeLedge;
+    private Ladder _activeLadder;
     private int _coins;
 
 
@@ -39,6 +41,12 @@ public class Player : MonoBehaviour
 
     void CalculateMovement()
     {
+        if (_climbing)
+        {
+            _moveDir = new Vector3(0, Input.GetAxisRaw("Vertical"), 0);
+            _anim.SetFloat("ClimbingSpeed", _moveDir.y);
+        }
+
         if (_controller.isGrounded)
         {
             _moveDir = new Vector3(0, 0, Input.GetAxisRaw("Horizontal"));
@@ -76,7 +84,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        else if (!_controller.isGrounded)
+        else if (!_controller.isGrounded && !_climbing)
         {
             _yVelocity -= _gravity;
         }
@@ -107,13 +115,26 @@ public class Player : MonoBehaviour
     {
         transform.position = _activeLedge.GetStandUpPosition();
         _anim.SetBool("GrabLedge", false);
-        _controller.enabled = true;
+        _activeLedge = null;
     }
 
     public void CoinCollected()
     {
         _coins += 1;
         UIManager.Instance.UpdateCoinsDisplay(_coins);
+    }
+
+    public void StartClimbing(Ladder currentLadder)
+    {
+        _climbing = true;
+        _anim.SetBool("LadderClimb", true);
+        _activeLadder = currentLadder;
+    }
+
+    public void StopClimbing()
+    {
+        _climbing = false;
+        _anim.SetBool("LadderClimb", false);
     }
 
     IEnumerator RollMovementBlockTime()
