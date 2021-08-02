@@ -14,7 +14,11 @@ public class Player : MonoBehaviour
     private Animator _anim;
     private bool _jumping = false;
     private bool _onLedge = false;
+    private bool _isRolling = false;
+    private bool _climbing = false;
     private Ledge _activeLedge;
+    private Ladder _activeLadder;
+    private int _coins;
 
 
     // Start is called before the first frame update
@@ -37,9 +41,18 @@ public class Player : MonoBehaviour
 
     void CalculateMovement()
     {
+        if (_climbing)
+        {
+            _moveDir = new Vector3(0, Input.GetAxisRaw("Vertical"), 0);
+            _anim.SetFloat("ClimbingSpeed", _moveDir.y);
+        }
+
         if (_controller.isGrounded)
         {
             _moveDir = new Vector3(0, 0, Input.GetAxisRaw("Horizontal"));
+
+            if (_isRolling) { _moveDir = new Vector3(0, 0, _playerVelocity.z/_speed); }
+
             _anim.SetFloat("Speed", Mathf.Abs(_moveDir.z));
 
             if (_jumping)
@@ -62,9 +75,16 @@ public class Player : MonoBehaviour
                 facing.y = _moveDir.z > 0 ? 0 : 180;
                 transform.localEulerAngles = facing;
             }
+
+            if (Input.GetKeyDown(KeyCode.LeftShift) && _moveDir.z != 0 && !_jumping)
+            {
+                _anim.SetTrigger("Roll");
+                _isRolling = true;
+                StartCoroutine(RollMovementBlockTime());
+            }
         }
 
-        else if (!_controller.isGrounded)
+        else if (!_controller.isGrounded && !_climbing)
         {
             _yVelocity -= _gravity;
         }
@@ -95,6 +115,31 @@ public class Player : MonoBehaviour
     {
         transform.position = _activeLedge.GetStandUpPosition();
         _anim.SetBool("GrabLedge", false);
-        _controller.enabled = true;
+        _activeLedge = null;
+    }
+
+    public void CoinCollected()
+    {
+        _coins += 1;
+        UIManager.Instance.UpdateCoinsDisplay(_coins);
+    }
+
+    public void StartClimbing(Ladder currentLadder)
+    {
+        _climbing = true;
+        _anim.SetBool("LadderClimb", true);
+        _activeLadder = currentLadder;
+    }
+
+    public void StopClimbing()
+    {
+        _climbing = false;
+        _anim.SetBool("LadderClimb", false);
+    }
+
+    IEnumerator RollMovementBlockTime()
+    {
+        yield return new WaitForSeconds(1.05f); // This is about the length of the rolling animation
+        _isRolling = false;
     }
 }
